@@ -1,0 +1,42 @@
+
+bool dfs(int course, int** graph, int* visited, int* adjSize) {
+    if (visited[course] == 1) return false;  
+    if (visited[course] == 2) return true;  
+
+    visited[course] = 1;  
+
+    for (int i = 0; i < adjSize[course]; i++) {
+        if (!dfs(graph[course][i], graph, visited, adjSize)) {
+            return false;
+        }
+    }
+
+    visited[course] = 2;  
+    return true;
+}
+
+bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize) {
+    int* graph[numCourses];
+    int adjSize[numCourses];
+    int visited[numCourses];  
+
+    for (int i = 0; i < numCourses; i++) {
+        graph[i] = (int*)malloc(numCourses * sizeof(int));
+        adjSize[i] = 0;
+        visited[i] = 0;
+    }
+
+    for (int i = 0; i < prerequisitesSize; i++) {
+        int course = prerequisites[i][0];
+        int prereq = prerequisites[i][1];
+        graph[prereq][adjSize[prereq]++] = course;
+    }
+
+    for (int i = 0; i < numCourses; i++) {
+        if (visited[i] == 0 && !dfs(i, graph, visited, adjSize)) {
+            return false;
+        }
+    }
+
+    return true;
+}
